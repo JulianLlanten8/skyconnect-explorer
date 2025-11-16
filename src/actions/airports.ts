@@ -6,26 +6,20 @@ import {
   AviationstackError,
   aviationstackClient,
 } from "@/services/aviationstack";
-import { CACHE_TAGS } from "@/services/cache";
-
 import {
   validateIATACode,
   validatePageNumber,
   validateSearchQuery,
 } from "@/services/validation";
 import type { Airport } from "@/types/airport";
-
 import type { AirportsResponse } from "@/types/api";
 
-/**
- * Tipo de respuesta de las acciones
- */
 export type ActionResponse<T> =
   | { success: true; data: T }
   | { success: false; error: string };
 
 /**
- * Obtiene una lista de aeropuertos con paginación
+ * Obtiene lista de aeropuertos con paginación
  */
 export async function getAirportsAction(
   page = 1,
@@ -40,26 +34,16 @@ export async function getAirportsAction(
     const offset = (validPage - 1) * validLimit;
 
     const response = await aviationstackClient.getAirports(
-      {
-        limit: validLimit,
-        offset,
-      },
-      {
-        revalidate: 3600,
-      },
+      { limit: validLimit, offset },
+      { revalidate: 3600 } // 1 hora
     );
 
-    return {
-      success: true,
-      data: response,
-    };
+    return { success: true, data: response };
   } catch (error) {
+    console.error("❌ Error in getAirportsAction:", error);
 
     if (error instanceof AviationstackError) {
-      return {
-        success: false,
-        error: error.message,
-      };
+      return { success: false, error: error.message };
     }
 
     return {
@@ -70,13 +54,12 @@ export async function getAirportsAction(
 }
 
 /**
- * Obtiene los detalles de un aeropuerto por su código
+ * Obtiene detalles de un aeropuerto
  */
 export async function getAirportDetailsAction(
   code: string,
 ): Promise<ActionResponse<Airport>> {
   try {
-
     if (!code || code.trim().length === 0) {
       return {
         success: false,
@@ -85,20 +68,17 @@ export async function getAirportDetailsAction(
     }
 
     const trimmedCode = code.trim().toUpperCase();
-
     let airport: Airport | null = null;
 
     if (trimmedCode.length === 3 && validateIATACode(trimmedCode)) {
       airport = await aviationstackClient.getAirportByIATA(trimmedCode, {
-        revalidate: 7200,
+        revalidate: 7200, // 2 horas
       });
     } else if (trimmedCode.length === 4) {
       airport = await aviationstackClient.getAirportByICAO(trimmedCode, {
         revalidate: 7200,
       });
-    } else {
     }
-
 
     if (!airport) {
       return {
@@ -107,29 +87,23 @@ export async function getAirportDetailsAction(
       };
     }
 
-    return {
-      success: true,
-      data: airport,
-    };
+    return { success: true, data: airport };
   } catch (error) {
+    console.error("❌ Error in getAirportDetailsAction:", error);
 
     if (error instanceof AviationstackError) {
-      return {
-        success: false,
-        error: error.message,
-      };
+      return { success: false, error: error.message };
     }
 
     return {
       success: false,
-      error:
-        "Error al obtener los detalles del aeropuerto. Por favor, intenta nuevamente.",
+      error: "Error al obtener los detalles del aeropuerto. Por favor, intenta nuevamente.",
     };
   }
 }
 
 /**
- * Busca aeropuertos por nombre o código
+ * Busca aeropuertos
  */
 export async function searchAirportsAction(
   query: string,
@@ -137,7 +111,6 @@ export async function searchAirportsAction(
   limit = PAGINATION.DEFAULT_LIMIT,
 ): Promise<ActionResponse<AirportsResponse>> {
   try {
-
     const validation = validateSearchQuery(query);
     if (!validation.isValid) {
       return {
@@ -154,11 +127,10 @@ export async function searchAirportsAction(
     const offset = (validPage - 1) * validLimit;
 
     const response = await aviationstackClient.searchAirports(query.trim(), {
-      revalidate: 1800,
+      revalidate: 1800, // 30 minutos
     });
 
-
-    // Aplicar paginación manual
+    // Paginación manual
     const startIndex = offset;
     const endIndex = startIndex + validLimit;
     const paginatedData = response.data.slice(startIndex, endIndex);
@@ -176,12 +148,10 @@ export async function searchAirportsAction(
       },
     };
   } catch (error) {
+    console.error("❌ Error in searchAirportsAction:", error);
 
     if (error instanceof AviationstackError) {
-      return {
-        success: false,
-        error: error.message,
-      };
+      return { success: false, error: error.message };
     }
 
     return {
@@ -216,38 +186,27 @@ export async function getAirportsByCountryAction(
 
     const response = await aviationstackClient.getAirportsByCountry(
       countryCode.toUpperCase(),
-      {
-        limit: validLimit,
-        offset,
-      },
-      {
-        revalidate: 3600,
-      },
+      { limit: validLimit, offset },
+      { revalidate: 3600 }
     );
 
-    return {
-      success: true,
-      data: response,
-    };
+    return { success: true, data: response };
   } catch (error) {
+    console.error("❌ Error in getAirportsByCountryAction:", error);
 
     if (error instanceof AviationstackError) {
-      return {
-        success: false,
-        error: error.message,
-      };
+      return { success: false, error: error.message };
     }
 
     return {
       success: false,
-      error:
-        "Error al obtener aeropuertos por país. Por favor, intenta nuevamente.",
+      error: "Error al obtener aeropuertos por país. Por favor, intenta nuevamente.",
     };
   }
 }
 
 /**
- * Revalida la caché de aeropuertos
+ * Revalida cache de aeropuertos (Next.js 16)
  */
 export async function revalidateAirportsAction(
   path?: string,
@@ -256,47 +215,36 @@ export async function revalidateAirportsAction(
     if (path) {
       revalidatePath(path);
     } else {
-      revalidateTag(CACHE_TAGS.AIRPORTS, "max");
+      revalidateTag('airports');
     }
 
-    return {
-      success: true,
-      data: null,
-    };
+    return { success: true, data: null };
   } catch (error) {
-
-    return {
-      success: false,
-      error: "Error al revalidar la caché",
-    };
+    console.error("❌ Error in revalidateAirportsAction:", error);
+    return { success: false, error: "Error al revalidar la caché" };
   }
 }
 
 /**
- * Revalida la caché de un aeropuerto específico
+ * Revalida cache de aeropuerto específico (Next.js 16)
  */
 export async function revalidateAirportDetailsAction(
   code: string,
 ): Promise<ActionResponse<null>> {
   try {
-    revalidateTag(CACHE_TAGS.AIRPORT_DETAILS(code.toUpperCase()), "max");
+    const upperCode = code.toUpperCase();
+    revalidateTag(`airport-${upperCode}`);
     revalidatePath(`/airport/${code.toLowerCase()}`);
 
-    return {
-      success: true,
-      data: null,
-    };
+    return { success: true, data: null };
   } catch (error) {
-
-    return {
-      success: false,
-      error: "Error al revalidar la caché del aeropuerto",
-    };
+    console.error("❌ Error in revalidateAirportDetailsAction:", error);
+    return { success: false, error: "Error al revalidar la caché del aeropuerto" };
   }
 }
 
 /**
- * Obtiene aeropuertos por página (helper para paginación simple)
+ * Helper para paginación
  */
 export async function getAirportsByPageAction(params: {
   page?: number;
@@ -305,12 +253,7 @@ export async function getAirportsByPageAction(params: {
   country?: string;
 }): Promise<ActionResponse<AirportsResponse>> {
   try {
-    const {
-      page = 1,
-      limit = PAGINATION.DEFAULT_LIMIT,
-      search,
-      country,
-    } = params;
+    const { page = 1, limit = PAGINATION.DEFAULT_LIMIT, search, country } = params;
 
     if (search && search.trim().length > 0) {
       return searchAirportsAction(search, page, limit);
@@ -322,6 +265,7 @@ export async function getAirportsByPageAction(params: {
 
     return getAirportsAction(page, limit);
   } catch (error) {
+    console.error("❌ Error in getAirportsByPageAction:", error);
     return {
       success: false,
       error: "Error al obtener aeropuertos. Por favor, intenta nuevamente.",

@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
 import { API_CONFIG, ERROR_MESSAGES } from "@/lib/utils/constants";
-import { apiCache, createCacheKey } from "@/services/cache";
 import type { Airport } from "@/types/airport";
 import type { AirportsResponse, ApiError } from "@/types/api";
 import {
@@ -30,42 +29,29 @@ export class AviationstackError extends Error {
 }
 
 /**
- * Opciones para las peticiones
+ * Opciones de fetch usando Next.js 16 cache nativo
  */
 interface FetchOptions {
-  cache?: RequestCache;
-  revalidate?: number;
-  timeout?: number;
-  skipCache?: boolean;
+  revalidate?: number | false;
+  tags?: string[];
 }
 
 /**
- * Realiza una petición a la API con manejo de errores Y CACHE
+ * Fetch con cache de Next.js 16 y manejo de errores
  */
 async function fetchAPI<T>(url: string, options?: FetchOptions): Promise<T> {
-  const cacheKey = createCacheKey('api', { url });
-
-  if (!options?.skipCache) {
-    const cached = apiCache.get<T>(cacheKey);
-    if (cached) {
-      return cached;
-    }
-  }
-
-
   const controller = new AbortController();
-  const timeoutId = setTimeout(
-    () => controller.abort(),
-    options?.timeout || API_CONFIG.TIMEOUT,
-  );
+  const timeoutId = setTimeout(() => controller.abort(), API_CONFIG.TIMEOUT);
 
   try {
     const response = await fetch(url, {
       signal: controller.signal,
-      cache: options?.cache || "force-cache",
-      next: options?.revalidate
-        ? { revalidate: options.revalidate }
-        : undefined,
+
+      cache: 'force-cache',
+      next: {
+        revalidate: options?.revalidate ?? 3600,
+        tags: options?.tags,
+      },
     });
 
     clearTimeout(timeoutId);
@@ -85,9 +71,7 @@ async function fetchAPI<T>(url: string, options?: FetchOptions): Promise<T> {
       );
     }
 
-    const data: T = await response.json();
-    apiCache.set(cacheKey, data, 60 * 60 * 1000);
-    return data;
+    return response.json();
   } catch (error) {
     clearTimeout(timeoutId);
 
@@ -103,6 +87,9 @@ async function fetchAPI<T>(url: string, options?: FetchOptions): Promise<T> {
   }
 }
 
+/**
+ * Cliente optimizado para Next.js 16
+ */
 export const aviationstackClient = {
   async getAirports(
     params?: AirportQueryParams,
@@ -110,38 +97,8 @@ export const aviationstackClient = {
   ): Promise<AirportsResponse> {
     const validatedParams = params ? validateQueryParams(params) : {};
     const { search, ...supportedParams } = validatedParams;
-    const cacheKey = createCacheKey('airports', supportedParams);
-
-    if (!options?.skipCache) {
-      const cached = apiCache.get<AirportsResponse>(cacheKey);
-      if (cached) {
-
-        if (search) {
-          const searchLower = search.toLowerCase();
-          const filtered = cached.data.filter((airport) =>
-            airport.airport_name.toLowerCase().includes(searchLower) ||
-            airport.iata_code.toLowerCase().includes(searchLower) ||
-            airport.icao_code.toLowerCase().includes(searchLower) ||
-            airport.city_iata_code.toLowerCase().includes(searchLower) ||
-            airport.country_name.toLowerCase().includes(searchLower)
-          );
-
-          return {
-            ...cached,
-            data: filtered,
-            pagination: {
-              ...cached.pagination,
-              count: filtered.length,
-              total: filtered.length,
-            },
-          };
-        }
-
-        return cached;
-      }
-    }
-
     const url = buildURL(ENDPOINTS.AIRPORTS, supportedParams);
+
     const rawData = await fetchAPI<{
       pagination: {
         limit: number;
@@ -163,12 +120,15 @@ export const aviationstackClient = {
         country_iso2: string;
         city_iata_code: string;
       }>;
-    }>(url, options);
+    }>(url, {
+      revalidate: options?.revalidate ?? 3600,
+      tags: ['airports'],
+    });
 
     const mapped = mapAirportsResponse(rawData);
     mapped.data = removeDuplicateAirports(mapped.data);
-    apiCache.set(cacheKey, mapped, 60 * 60 * 1000);
 
+    // Filtrar en memoria si hay búsqueda
     if (search) {
       const searchLower = search.toLowerCase();
       const filtered = mapped.data.filter((airport) =>
@@ -198,17 +158,8 @@ export const aviationstackClient = {
     options?: FetchOptions,
   ): Promise<Airport | null> {
     const code = iataCode.toUpperCase();
-    const cacheKey = createCacheKey('airport-iata', { code });
-
-    // SOLO retornar cache si NO es null
-    if (!options?.skipCache) {
-      const cached = apiCache.get<Airport | null>(cacheKey);
-      if (cached !== undefined && cached !== null) {
-        return cached;
-      }
-    }
-
     const url = buildURL(ENDPOINTS.AIRPORTS, { iata_code: code });
+
     const rawData = await fetchAPI<{
       pagination: { limit: number; offset: number; count: number; total: number };
       data: Array<{
@@ -225,17 +176,12 @@ export const aviationstackClient = {
         country_iso2: string;
         city_iata_code: string;
       }>;
-    }>(url, options);
+    }>(url, {
+      revalidate: options?.revalidate ?? 7200,
+      tags: ['airports', `airport-${code}`],
+    });
 
-    const airport = mapSingleAirport(rawData);
-
-    // Solo cachear si encontramos algo
-    if (airport) {
-      apiCache.set(cacheKey, airport, 2 * 60 * 60 * 1000);
-    } else {
-    }
-
-    return airport;
+    return mapSingleAirport(rawData);
   },
 
   async getAirportByICAO(
@@ -243,17 +189,8 @@ export const aviationstackClient = {
     options?: FetchOptions,
   ): Promise<Airport | null> {
     const code = icaoCode.toUpperCase();
-    const cacheKey = createCacheKey('airport-icao', { code });
-
-    // SOLO retornar cache si NO es null
-    if (!options?.skipCache) {
-      const cached = apiCache.get<Airport | null>(cacheKey);
-      if (cached !== undefined && cached !== null) {
-        return cached;
-      }
-    }
-
     const url = buildURL(ENDPOINTS.AIRPORTS, { icao_code: code });
+
     const rawData = await fetchAPI<{
       pagination: { limit: number; offset: number; count: number; total: number };
       data: Array<{
@@ -270,23 +207,19 @@ export const aviationstackClient = {
         country_iso2: string;
         city_iata_code: string;
       }>;
-    }>(url, options);
+    }>(url, {
+      revalidate: options?.revalidate ?? 7200,
+      tags: ['airports', `airport-${code}`],
+    });
 
-    const airport = mapSingleAirport(rawData);
-
-    // Solo cachear si encontramos algo
-    if (airport) {
-      apiCache.set(cacheKey, airport, 2 * 60 * 60 * 1000);
-    } else {
-    }
-
-    return airport;
+    return mapSingleAirport(rawData);
   },
 
   async searchAirports(
     query: string,
     options?: FetchOptions,
   ): Promise<AirportsResponse> {
+    // Códigos IATA (3 letras)
     if (query.length === 3) {
       try {
         const airport = await this.getAirportByIATA(query, options);
@@ -297,10 +230,11 @@ export const aviationstackClient = {
           };
         }
       } catch (_error) {
-        return notFound();
+        // Continuar
       }
     }
 
+    // Códigos ICAO (4 letras)
     if (query.length === 4) {
       try {
         const airport = await this.getAirportByICAO(query, options);
@@ -315,7 +249,14 @@ export const aviationstackClient = {
       }
     }
 
-    return this.getAirports({ search: query, limit: 100 }, options);
+    // Búsqueda general
+    return this.getAirports(
+      { search: query, limit: 100 },
+      {
+        revalidate: options?.revalidate ?? 1800,
+        tags: ['search', `search-${query}`],
+      }
+    );
   },
 
   async getAirportsByCountry(
@@ -323,11 +264,13 @@ export const aviationstackClient = {
     params?: Omit<AirportQueryParams, "country_iso2">,
     options?: FetchOptions,
   ): Promise<AirportsResponse> {
-    return this.getAirports({ ...params, country_iso2: countryCode }, options);
-  },
-
-  clearCache() {
-    apiCache.clear();
+    return this.getAirports(
+      { ...params, country_iso2: countryCode },
+      {
+        revalidate: options?.revalidate ?? 3600,
+        tags: ['airports', `country-${countryCode}`],
+      }
+    );
   },
 };
 

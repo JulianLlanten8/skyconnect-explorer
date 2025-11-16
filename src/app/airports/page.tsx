@@ -37,11 +37,11 @@ export default async function AirportsPage({ searchParams }: PageProps) {
 
       <div className="relative z-10">
         {/* Header */}
-        <header className="sticky top-0 z-10 ">
+        <header className="sticky top-0 z-10 animate-slide-up">
           <div className="container mx-auto px-4 py-4">
             <div className="flex items-center justify-between">
               <Link href="/" className="flex items-center gap-2">
-                <h1 className="text-4xl  bg-linear-to-r from-[#006AFF] to-[#00F9FF] inline-block text-transparent bg-clip-text">
+                <h1 className="text-4xl bg-linear-to-r from-[#006AFF] to-[#00F9FF] inline-block text-transparent bg-clip-text">
                   SkyConnect Explorer
                 </h1>
               </Link>
@@ -58,8 +58,6 @@ export default async function AirportsPage({ searchParams }: PageProps) {
         <section className="container mx-auto">
           {/* Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-            {/* Sidebar - History */}
-
             {/* Results */}
             <div className="lg:col-span-4">
               <Suspense
@@ -95,11 +93,10 @@ async function AirportsResults({
     search,
     country,
   });
-  console.log(result);
 
   if (!result.success) {
     return (
-      <div className="text-center py-12">
+      <div className="text-center py-12 animate-scale-in">
         <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full mb-4">
           <TriangleAlert />
         </div>
@@ -115,7 +112,7 @@ async function AirportsResults({
 
   if (airports.length === 0) {
     return (
-      <div className="text-center py-12">
+      <div className="text-center py-12 animate-scale-in">
         <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full mb-4">
           <SearchX />
         </div>
@@ -136,7 +133,7 @@ async function AirportsResults({
   return (
     <main className="space-y-8">
       {/* Results Info */}
-      <div className="flex items-center justify-between">
+      <div className="flex items-center justify-between animate-slide-up">
         <p className="text-sm text-gray-600 dark:text-gray-400">
           Mostrando{" "}
           <span className="font-semibold text-gray-900 dark:text-white">
@@ -151,16 +148,20 @@ async function AirportsResults({
         </p>
       </div>
 
-      {/* Grid */}
+      {/* Grid con animaciones escalonadas */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-y-10">
-        {airports.map((airport) => (
-          <AirportCard key={airport.id} airport={airport} />
+        {airports.map((airport, index) => (
+          <AirportCard 
+            key={airport.id} 
+            airport={airport} 
+            index={index}
+          />
         ))}
       </section>
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="mt-8">
+        <div className="mt-8 animate-slide-up delay-300">
           <Pagination currentPage={page} totalPages={totalPages} />
         </div>
       )}
@@ -177,7 +178,7 @@ function AirportsLoading() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
         {Array.from({ length: 6 }).map((_, i) => (
-          <div key={i} className="space-y-3">
+          <div key={i} className="space-y-3 animate-pulse">
             <Skeleton className="h-48 w-full" />
           </div>
         ))}

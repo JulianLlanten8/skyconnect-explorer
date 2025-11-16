@@ -1,1 +1,0 @@
-// Variantes de animación
