@@ -1,36 +1,57 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SkyConnect Explorer
 
-## Getting Started
-
-First, run the development server:
+## 📦 Instalar dependencias
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+bun i
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## ⚙️ Configurar Variables de entorno
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+copiar `.env.example` a `.env` y completar con:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```env
+API_URL=https://api.aviationstack.com/v1
+PRIVATE_KEY_AVIATIONSTACK=your_api_key_here
+```
 
-## Learn More
+## 🚀 Iniciar el servidor de desarrollo:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+bun run dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Deberías ver el servidor corriendo en http://localhost:3000
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🏠 construcción del proyecto a producción:
+
+```bash
+bun run build
+
+bun run start
+```
 
 ## Deploy on Vercel
 
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+### Dependencias de desarrollo (tipos):
+
+```bash
+bun add -D @types/leaflet
+```
+
+
+
+## 📚 Librerías instaladas, agradezco a los autores de estas por su trabajo y contribuciones:
+
+- **zustand**: State management ligero
+- **leaflet**: Librería de mapas interactivos
+- **react-leaflet**: Wrapper de Leaflet para React
+- **@types/leaflet**: Tipos de TypeScript para Leaflet
+- **framer-motion**: Animaciones fluidas
+- **clsx**: Utilidad para combinar class names
+- **tailwind-merge**: Merge de clases de Tailwind sin conflictos
+- **date-fns**: Utilidades para manejo de fechas
