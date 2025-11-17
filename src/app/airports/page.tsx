@@ -59,7 +59,7 @@ export default async function AirportsPage({ searchParams }: PageProps) {
           {/* Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
             {/* Results */}
-            <div className="lg:col-span-4">
+            <section className="lg:col-span-4">
               <Suspense
                 key={`${search}-${page}-${country}`}
                 fallback={<AirportsLoading />}
@@ -70,7 +70,7 @@ export default async function AirportsPage({ searchParams }: PageProps) {
                   country={country}
                 />
               </Suspense>
-            </div>
+            </section>
           </div>
         </section>
       </div>
@@ -131,9 +131,9 @@ async function AirportsResults({
   const totalPages = Math.ceil(pagination.total / pagination.limit);
 
   return (
-    <main className="space-y-8">
+    <section className="space-y-8">
       {/* Results Info */}
-      <div className="flex items-center justify-between animate-slide-up">
+      <header className="flex items-center justify-between animate-slide-up">
         <p className="text-sm text-gray-600 dark:text-gray-400">
           Mostrando{" "}
           <span className="font-semibold text-gray-900 dark:text-white">
@@ -146,22 +146,24 @@ async function AirportsResults({
           </span>{" "}
           aeropuertos
         </p>
-      </div>
+      </header>
 
       {/* Grid con animaciones escalonadas */}
-      <section className="grid grid-cols-1 md:grid-cols-2 gap-y-10">
+      <ul className="grid grid-cols-1 md:grid-cols-2 gap-y-10 gap-x-4 list-none">
         {airports.map((airport, index) => (
-          <AirportCard key={airport.id} airport={airport} index={index} />
+          <li key={airport.id}>
+            <AirportCard airport={airport} index={index} />
+          </li>
         ))}
-      </section>
+      </ul>
 
       {/* Pagination */}
       {totalPages > 1 && (
-        <div className="mt-8 animate-slide-up delay-300">
+        <nav className="mt-8 animate-slide-up delay-300">
           <Pagination currentPage={page} totalPages={totalPages} />
-        </div>
+        </nav>
       )}
-    </main>
+    </section>
   );
 }
 

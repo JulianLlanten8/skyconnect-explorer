@@ -34,7 +34,6 @@ export function Tabs({ tabs, activeTab, onTabChange, className }: TabsProps) {
             )}
             aria-current={activeTab === tab.id ? "page" : undefined}
           >
-            {tab.icon}
             {tab.label}
           </button>
         ))}

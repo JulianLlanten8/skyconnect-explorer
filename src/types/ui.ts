@@ -25,6 +25,8 @@ export interface ButtonProps
   variant?: "primary" | "secondary" | "ghost" | "outline";
   size?: "sm" | "md" | "lg";
   isLoading?: boolean;
+  form?: string;
+  type?: "button" | "submit" | "reset";
 }
 
 export interface InputProps

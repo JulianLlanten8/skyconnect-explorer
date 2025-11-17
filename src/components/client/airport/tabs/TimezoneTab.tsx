@@ -1,10 +1,13 @@
 "use client";
 
+import { Clock } from "lucide-react";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { formatGMT, getLocalTime } from "@/lib/utils/formatters";
 import type { Airport } from "@/types/airport";
-import { Badge } from "../../../ui/Badge";
 import { Card, CardContent } from "../../../ui/Card";
+import SubCard from "./cards/SubCard";
+import { Subtitle } from "./titles/AirportSubtitle";
 
 interface TimezoneTabProps {
   airport: Airport;
@@ -30,68 +33,54 @@ export function TimezoneTab({ airport }: TimezoneTabProps) {
   return (
     <Card>
       <CardContent className="space-y-6">
-        <div className="flex items-center gap-3">
-          <svg
-            className="w-6 h-6 text-blue-600 dark:text-blue-400"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <title>Timezone Information</title>
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
-            />
-          </svg>
-          <h3 className="text-xl font-semibold text-blue-600 dark:text-blue-400">
-            Zona Horaria
-          </h3>
-        </div>
+        <SubCard
+          elements={
+            <>
+              <div className="flex items-center gap-3">
+                <Image
+                  src="/icons/global.svg"
+                  alt="Ícono de ubicación"
+                  width={10}
+                  height={10}
+                  className="w-8 h-8"
+                />
+                <Subtitle value="Zona Horaria" className="text-2xl" />
+              </div>
 
-        <div className="space-y-4">
-          {airport.timezone && (
-            <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                Zona Horaria:
-              </p>
-              <p className="text-lg text-gray-900 dark:text-white">
-                {airport.timezone}
-              </p>
-            </div>
-          )}
+              <div className="space-y-4">
+                {airport.timezone && (
+                  <p className="text-lg font-bold my-2">
+                    Zona Horaria:
+                    <span className="text-sm ml-3">{airport.timezone}</span>
+                  </p>
+                )}
 
-          {airport.gmt && (
-            <div>
-              <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-                GMT:
-              </p>
-              <Badge variant="info" className="text-base font-mono px-3 py-1">
-                {formatGMT(airport.gmt)}
-              </Badge>
-            </div>
-          )}
-        </div>
+                {airport.gmt && (
+                  <div>
+                    <p className="text-lg font-bold mb-1">
+                      GMT:
+                      <span className="text-sm ml-3">
+                        {formatGMT(airport.gmt)}
+                      </span>
+                    </p>
+                  </div>
+                )}
+              </div>
+            </>
+          }
+        />
 
-        {currentTime && (
-          <div className="mt-6 p-6 bg-linear-to-r from-blue-50 to-cyan-50 dark:from-blue-900/20 dark:to-cyan-900/20 rounded-lg">
-            <p className="text-sm font-medium text-gray-600 dark:text-gray-400 mb-2">
-              Hora Local:
-            </p>
-            <p className="text-3xl font-bold text-blue-600 dark:text-blue-400 font-mono">
-              {currentTime}
-            </p>
-          </div>
-        )}
-
-        <div className="p-4 bg-gray-50 dark:bg-gray-800 rounded-lg">
-          <p className="text-sm text-gray-600 dark:text-gray-400">
-            La hora local se calcula automáticamente basándose en el offset GMT
-            del aeropuerto. Ten en cuenta que algunos aeropuertos pueden
-            observar horario de verano.
-          </p>
-        </div>
+        <SubCard
+          elements={
+            <section>
+              <div className="flex items-center gap-3">
+                <Clock height={80} />
+                <Subtitle value="Hora Local:" className="text-2xl" />
+              </div>
+              <p className="font-mono">{currentTime}</p>
+            </section>
+          }
+        />
       </CardContent>
     </Card>
   );

@@ -1,3 +1,4 @@
+"use client";
 import { LoaderCircle } from "lucide-react";
 import type { Ref } from "react";
 import { cn } from "@/lib/utils/cn";
@@ -11,6 +12,8 @@ export function Button({
   children,
   disabled,
   ref,
+  type = "button",
+  form,
   ...props
 }: ButtonProps & { ref?: Ref<HTMLButtonElement> }) {
   const baseStyles =
@@ -30,13 +33,14 @@ export function Button({
     md: "px-4 py-2 text-base",
     lg: "px-6 py-3 text-lg",
   };
-
   return (
     <button
       ref={ref}
       className={cn(baseStyles, variants[variant], sizes[size], className)}
       disabled={disabled || isLoading}
       {...props}
+      type={type}
+      form={form}
     >
       {isLoading && <LoaderCircle className="mr-2 h-5 w-5 animate-spin" />}
       {children}

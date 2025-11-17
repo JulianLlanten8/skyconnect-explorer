@@ -4,6 +4,8 @@ import Image from "next/image";
 import { Badge } from "@/components/ui/Badge";
 import type { Airport } from "@/types/airport";
 import { Card, CardContent } from "../../../ui/Card";
+import SubCard from "./cards/SubCard";
+import { Subtitle } from "./titles/AirportSubtitle";
 
 interface GeneralTabProps {
   airport: Airport;
@@ -13,52 +15,70 @@ export function GeneralTab({ airport }: GeneralTabProps) {
   return (
     <Card>
       <CardContent className="space-y-6">
-        <div className="flex items-center gap-3">
-          <Image
-            src="/icons/location.svg"
-            alt="Ícono de ubicación"
-            width={40}
-            height={40}
-            className="w-10 h-10"
-          />
-          <h3 className="text-xl font-semibold text-blue-600 dark:text-blue-400">
-            Información General
-          </h3>
-        </div>
+        <SubCard
+          elements={
+            <>
+              <header className="flex items-center gap-3 my-3">
+                <Image
+                  src="/icons/info-circle.svg"
+                  alt="Ícono de ubicación"
+                  width={20}
+                  height={20}
+                  className="w-8 h-8"
+                />
+                <Subtitle value="Información General" className="text-4xl" />
+              </header>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <InfoItem label="Código IATA" value={airport.iata_code || "N/A"} />
-          <InfoItem label="Código ICAO" value={airport.icao_code || "N/A"} />
-          <InfoItem label="País" value={airport.country_name} />
-          <InfoItem
-            label="Ciudad IATA"
-            value={airport.city_iata_code || "N/A"}
-          />
-          <InfoItem label="Teléfono" value={airport.phone_number} />
-        </div>
+              <p className="text-xl font-bold">
+                Código IATA:
+                <span className="text-lg ml-3 font-normal">
+                  {airport.iata_code || "N/A"}
+                </span>
+              </p>
 
-        {airport.iata_code && airport.icao_code && (
-          <div className="flex gap-2">
-            <Badge variant="info" className="font-mono text-sm px-3 py-1">
-              IATA: {airport.iata_code}
-            </Badge>
-            <Badge variant="default" className="font-mono text-sm px-3 py-1">
-              ICAO: {airport.icao_code}
-            </Badge>
-          </div>
-        )}
+              <p className="text-xl font-bold">
+                Código ICAO:
+                <span className="text-lg ml-3 font-normal">
+                  {airport.icao_code || "N/A"}
+                </span>
+              </p>
+
+              <p className="text-xl font-bold">
+                País:
+                <span className="text-lg ml-3 font-normal">
+                  {airport.country_name || "N/A"}
+                </span>
+              </p>
+              <p className="text-xl font-bold">
+                Ciudad IATA:
+                <span className="text-lg ml-3 font-normal">
+                  {airport.city_iata_code || "N/A"}
+                </span>
+              </p>
+              <p className="text-xl font-bold">
+                Teléfono:
+                <span className="text-lg ml-3 font-normal">
+                  {airport.phone_number || "N/A"}
+                </span>
+              </p>
+
+              {airport.iata_code && airport.icao_code && (
+                <footer className="flex gap-2 my-2">
+                  <Badge variant="info" className="font-mono text-sm px-3 py-1">
+                    IATA: {airport.iata_code}
+                  </Badge>
+                  <Badge
+                    variant="default"
+                    className="font-mono text-sm px-3 py-1"
+                  >
+                    ICAO: {airport.icao_code}
+                  </Badge>
+                </footer>
+              )}
+            </>
+          }
+        />
       </CardContent>
     </Card>
-  );
-}
-
-function InfoItem({ label, value }: { label: string; value: string }) {
-  return (
-    <div>
-      <p className="text-sm font-medium text-gray-500 dark:text-gray-400 mb-1">
-        {label}:
-      </p>
-      <p className="text-base text-gray-900 dark:text-white">{value}</p>
-    </div>
   );
 }

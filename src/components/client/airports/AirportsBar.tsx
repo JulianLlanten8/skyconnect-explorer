@@ -1,7 +1,7 @@
 "use client";
 
 import { Search } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import { useState, useTransition } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -13,6 +13,7 @@ interface Props {
 
 export function AirportsBar({ needSearchButton = true }: Props) {
   const router = useRouter();
+  const pathname = usePathname();
   const searchParams = useSearchParams();
   const [query, setQuery] = useState(searchParams.get("search") || "");
   const [isPending, startTransition] = useTransition();
@@ -36,48 +37,43 @@ export function AirportsBar({ needSearchButton = true }: Props) {
     });
   };
 
-  const handleClear = () => {
-    setQuery("");
-    router.push("/airports");
+  const handlechange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
+
+    if (e.target.value.trim().length === 0 && pathname !== "/") {
+      setQuery("");
+      router.push("/airports");
+    }
   };
 
   return (
-    <form onSubmit={handleSearch} className="w-full max-w-2xl mx-auto">
-      <div className="flex gap-2">
-        <div className="flex-1">
+    <section className="w-full">
+      <form onSubmit={handleSearch} id="airport-search">
+        <div className="flex gap-2">
           <Input
-            type="text"
+            id="airport-search-input"
+            type="search"
             placeholder="Buscar aeropuertos..."
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
-            className="w-full rounded-full"
+            onChange={handlechange}
+            className="w-full rounded-full bg-white"
+            aria-label="Buscar aeropuertos por nombre o código"
           />
+
+          {needSearchButton && (
+            <Button
+              className="w-full sm:w-auto min-w-[200px] bg-linear-to-r from-[#006AFF] to-[#00F9FF]"
+              type="submit"
+              variant="primary"
+              isLoading={isPending}
+              disabled={isPending}
+            >
+              <Search />
+              Buscar
+            </Button>
+          )}
         </div>
-
-        {query && (
-          <Button
-            type="button"
-            variant="ghost"
-            onClick={handleClear}
-            disabled={isPending}
-          >
-            Limpiar
-          </Button>
-        )}
-
-        {needSearchButton && (
-          <Button
-            className="w-full sm:w-auto min-w-[200px] bg-linear-to-r from-[#006AFF] to-[#00F9FF]"
-            type="submit"
-            variant="primary"
-            isLoading={isPending}
-            disabled={isPending}
-          >
-            <Search />
-            Buscar
-          </Button>
-        )}
-      </div>
-    </form>
+      </form>
+    </section>
   );
 }

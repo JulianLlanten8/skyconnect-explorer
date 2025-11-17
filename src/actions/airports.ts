@@ -40,7 +40,6 @@ export async function getAirportsAction(
 
     return { success: true, data: response };
   } catch (error) {
-    console.error("❌ Error in getAirportsAction:", error);
 
     if (error instanceof AviationstackError) {
       return { success: false, error: error.message };
@@ -89,7 +88,6 @@ export async function getAirportDetailsAction(
 
     return { success: true, data: airport };
   } catch (error) {
-    console.error("❌ Error in getAirportDetailsAction:", error);
 
     if (error instanceof AviationstackError) {
       return { success: false, error: error.message };
@@ -149,7 +147,6 @@ export async function searchAirportsAction(
       },
     };
   } catch (error) {
-    console.error("❌ Error in searchAirportsAction:", error);
 
     if (error instanceof AviationstackError) {
       return { success: false, error: error.message };
@@ -193,7 +190,6 @@ export async function getAirportsByCountryAction(
 
     return { success: true, data: response };
   } catch (error) {
-    console.error("❌ Error in getAirportsByCountryAction:", error);
 
     if (error instanceof AviationstackError) {
       return { success: false, error: error.message };
@@ -217,12 +213,11 @@ export async function revalidateAirportsAction(
     if (path) {
       revalidatePath(path);
     } else {
-      revalidateTag("airports");
+      revalidateTag("airports", "page");
     }
 
     return { success: true, data: null };
-  } catch (error) {
-    console.error("❌ Error in revalidateAirportsAction:", error);
+  } catch (_error) {
     return { success: false, error: "Error al revalidar la caché" };
   }
 }
@@ -235,12 +230,11 @@ export async function revalidateAirportDetailsAction(
 ): Promise<ActionResponse<null>> {
   try {
     const upperCode = code.toUpperCase();
-    revalidateTag(`airport-${upperCode}`);
+    revalidateTag(`airport-${upperCode}`,  "page");
     revalidatePath(`/airport/${code.toLowerCase()}`);
 
     return { success: true, data: null };
-  } catch (error) {
-    console.error("❌ Error in revalidateAirportDetailsAction:", error);
+  } catch (_error) {
     return {
       success: false,
       error: "Error al revalidar la caché del aeropuerto",
@@ -275,10 +269,9 @@ export async function getAirportsByPageAction(params: {
 
     return getAirportsAction(page, limit);
   } catch (error) {
-    console.error("❌ Error in getAirportsByPageAction:", error);
     return {
       success: false,
-      error: "Error al obtener aeropuertos. Por favor, intenta nuevamente.",
+      error: `"Error al obtener aeropuertos. Por favor, intenta nuevamente.", ${error}`,
     };
   }
 }

@@ -10,7 +10,7 @@ export const PAGINATION = {
   DEFAULT_LIMIT: 6,
   MAX_LIMIT: 100,
   MIN_LIMIT: 1,
-} as const;
+};
 
 // Tabs del detalle del aeropuerto
 export const AIRPORT_TABS = [

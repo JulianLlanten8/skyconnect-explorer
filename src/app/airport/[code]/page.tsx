@@ -23,46 +23,42 @@ export default async function AirportDetailsPage({ params }: PageProps) {
   const airport = result.data;
 
   return (
-    <div className="min-h-screen bg-gray-50 dark:bg-gray-900">
+    <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
       <header className="sticky top-0 z-10 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
-        <div className="container mx-auto px-4 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <BackButton fallbackUrl="/airports" />
+        <nav className="container mx-auto px-4 py-4 flex items-center justify-between">
+          <section className="flex items-center gap-4">
+            <BackButton fallbackUrl="/airports" />
 
-              <Link href="/" className="flex items-center gap-2">
-                <span className="text-xl font-bold text-gray-900 dark:text-white hidden sm:inline">
-                  SkyConnect Explorer
-                </span>
-              </Link>
-            </div>
+            <Link href="/" className="flex items-center gap-2">
+              <span className="text-xl font-bold text-gray-900 dark:text-white hidden sm:inline">
+                SkyConnect Explorer
+              </span>
+            </Link>
+          </section>
 
-            <ThemeToggle />
-          </div>
-        </div>
+          <ThemeToggle />
+        </nav>
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto py-8">
+      <article className="container mx-auto py-8">
         {/* Airport Header */}
-        <div className="mb-8">
-          <div className="flex items-center justify-center gap-4 mb-5">
-            <h1 className="text-8xl md:text-4xl font-extrabold  bg-linear-to-r from-[#006AFF] to-[#00F9FF] inline-block text-transparent bg-clip-text">
-              {airport.airport_name}
-            </h1>
-          </div>
+        <header className="mb-8">
+          <h1 className="text-8xl md:text-4xl font-extrabold  bg-linear-to-r from-[#006AFF] to-[#00F9FF] inline-block text-transparent bg-clip-text text-center mb-5">
+            {airport.airport_name}
+          </h1>
 
           {/* Navigation Tabs */}
           <AirportTabs />
-        </div>
+        </header>
 
         {/* Tab Content */}
-        <div className="max-w-8xl">
+        <section className="max-w-8xl">
           <AirportTabContent airport={airport} />
-        </div>
-      </main>
-    </div>
+        </section>
+      </article>
+    </main>
   );
 }
 
