@@ -1,5 +1,4 @@
 import { Search } from "lucide-react";
-import Link from "next/link";
 import { AirportsBar } from "@/components/client/airports/AirportsBar";
 import { Button } from "@/components/ui/Button";
 

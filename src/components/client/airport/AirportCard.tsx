@@ -16,10 +16,10 @@ export function AirportCard({ airport, index = 0 }: AirportCardProps) {
     <motion.div
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ 
-        duration: 0.3, 
+      transition={{
+        duration: 0.3,
         delay: index * 0.05,
-        ease: [0.4, 0, 0.2, 1]
+        ease: [0.4, 0, 0.2, 1],
       }}
       whileHover={{ scale: 1.02 }}
       whileTap={{ scale: 0.98 }}
@@ -38,7 +38,7 @@ export function AirportCard({ airport, index = 0 }: AirportCardProps) {
                 {airport.city_iata_code}, {airport.country_name}
               </p>
               {airport.iata_code && (
-                <motion.h1 
+                <motion.h1
                   className="text-3xl font-extrabold bg-linear-to-r from-[#006AFF] to-[#00F9FF] inline-block text-transparent bg-clip-text"
                   whileHover={{ scale: 1.05 }}
                 >
@@ -47,7 +47,7 @@ export function AirportCard({ airport, index = 0 }: AirportCardProps) {
               )}
             </section>
 
-            <motion.div 
+            <motion.div
               className="flex h-14 w-14 items-center justify-center"
               whileHover={{ rotate: 15 }}
               transition={{ type: "spring", stiffness: 300 }}

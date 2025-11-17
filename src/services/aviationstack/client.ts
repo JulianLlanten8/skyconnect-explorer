@@ -47,7 +47,7 @@ async function fetchAPI<T>(url: string, options?: FetchOptions): Promise<T> {
     const response = await fetch(url, {
       signal: controller.signal,
 
-      cache: 'force-cache',
+      cache: "force-cache",
       next: {
         revalidate: options?.revalidate ?? 3600,
         tags: options?.tags,
@@ -122,7 +122,7 @@ export const aviationstackClient = {
       }>;
     }>(url, {
       revalidate: options?.revalidate ?? 3600,
-      tags: ['airports'],
+      tags: ["airports"],
     });
 
     const mapped = mapAirportsResponse(rawData);
@@ -131,12 +131,13 @@ export const aviationstackClient = {
     // Filtrar en memoria si hay búsqueda
     if (search) {
       const searchLower = search.toLowerCase();
-      const filtered = mapped.data.filter((airport) =>
-        airport.airport_name.toLowerCase().includes(searchLower) ||
-        airport.iata_code.toLowerCase().includes(searchLower) ||
-        airport.icao_code.toLowerCase().includes(searchLower) ||
-        airport.city_iata_code.toLowerCase().includes(searchLower) ||
-        airport.country_name.toLowerCase().includes(searchLower)
+      const filtered = mapped.data.filter(
+        (airport) =>
+          airport.airport_name.toLowerCase().includes(searchLower) ||
+          airport.iata_code.toLowerCase().includes(searchLower) ||
+          airport.icao_code.toLowerCase().includes(searchLower) ||
+          airport.city_iata_code.toLowerCase().includes(searchLower) ||
+          airport.country_name.toLowerCase().includes(searchLower),
       );
 
       return {
@@ -161,7 +162,12 @@ export const aviationstackClient = {
     const url = buildURL(ENDPOINTS.AIRPORTS, { iata_code: code });
 
     const rawData = await fetchAPI<{
-      pagination: { limit: number; offset: number; count: number; total: number };
+      pagination: {
+        limit: number;
+        offset: number;
+        count: number;
+        total: number;
+      };
       data: Array<{
         airport_name: string;
         iata_code: string;
@@ -178,7 +184,7 @@ export const aviationstackClient = {
       }>;
     }>(url, {
       revalidate: options?.revalidate ?? 7200,
-      tags: ['airports', `airport-${code}`],
+      tags: ["airports", `airport-${code}`],
     });
 
     return mapSingleAirport(rawData);
@@ -192,7 +198,12 @@ export const aviationstackClient = {
     const url = buildURL(ENDPOINTS.AIRPORTS, { icao_code: code });
 
     const rawData = await fetchAPI<{
-      pagination: { limit: number; offset: number; count: number; total: number };
+      pagination: {
+        limit: number;
+        offset: number;
+        count: number;
+        total: number;
+      };
       data: Array<{
         airport_name: string;
         iata_code: string;
@@ -209,7 +220,7 @@ export const aviationstackClient = {
       }>;
     }>(url, {
       revalidate: options?.revalidate ?? 7200,
-      tags: ['airports', `airport-${code}`],
+      tags: ["airports", `airport-${code}`],
     });
 
     return mapSingleAirport(rawData);
@@ -254,8 +265,8 @@ export const aviationstackClient = {
       { search: query, limit: 100 },
       {
         revalidate: options?.revalidate ?? 1800,
-        tags: ['search', `search-${query}`],
-      }
+        tags: ["search", `search-${query}`],
+      },
     );
   },
 
@@ -268,8 +279,8 @@ export const aviationstackClient = {
       { ...params, country_iso2: countryCode },
       {
         revalidate: options?.revalidate ?? 3600,
-        tags: ['airports', `country-${countryCode}`],
-      }
+        tags: ["airports", `country-${countryCode}`],
+      },
     );
   },
 };

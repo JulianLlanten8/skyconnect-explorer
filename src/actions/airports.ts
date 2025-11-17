@@ -35,7 +35,7 @@ export async function getAirportsAction(
 
     const response = await aviationstackClient.getAirports(
       { limit: validLimit, offset },
-      { revalidate: 3600 } // 1 hora
+      { revalidate: 3600 }, // 1 hora
     );
 
     return { success: true, data: response };
@@ -97,7 +97,8 @@ export async function getAirportDetailsAction(
 
     return {
       success: false,
-      error: "Error al obtener los detalles del aeropuerto. Por favor, intenta nuevamente.",
+      error:
+        "Error al obtener los detalles del aeropuerto. Por favor, intenta nuevamente.",
     };
   }
 }
@@ -187,7 +188,7 @@ export async function getAirportsByCountryAction(
     const response = await aviationstackClient.getAirportsByCountry(
       countryCode.toUpperCase(),
       { limit: validLimit, offset },
-      { revalidate: 3600 }
+      { revalidate: 3600 },
     );
 
     return { success: true, data: response };
@@ -200,7 +201,8 @@ export async function getAirportsByCountryAction(
 
     return {
       success: false,
-      error: "Error al obtener aeropuertos por país. Por favor, intenta nuevamente.",
+      error:
+        "Error al obtener aeropuertos por país. Por favor, intenta nuevamente.",
     };
   }
 }
@@ -215,7 +217,7 @@ export async function revalidateAirportsAction(
     if (path) {
       revalidatePath(path);
     } else {
-      revalidateTag('airports');
+      revalidateTag("airports");
     }
 
     return { success: true, data: null };
@@ -239,7 +241,10 @@ export async function revalidateAirportDetailsAction(
     return { success: true, data: null };
   } catch (error) {
     console.error("❌ Error in revalidateAirportDetailsAction:", error);
-    return { success: false, error: "Error al revalidar la caché del aeropuerto" };
+    return {
+      success: false,
+      error: "Error al revalidar la caché del aeropuerto",
+    };
   }
 }
 
@@ -253,7 +258,12 @@ export async function getAirportsByPageAction(params: {
   country?: string;
 }): Promise<ActionResponse<AirportsResponse>> {
   try {
-    const { page = 1, limit = PAGINATION.DEFAULT_LIMIT, search, country } = params;
+    const {
+      page = 1,
+      limit = PAGINATION.DEFAULT_LIMIT,
+      search,
+      country,
+    } = params;
 
     if (search && search.trim().length > 0) {
       return searchAirportsAction(search, page, limit);

@@ -151,11 +151,7 @@ async function AirportsResults({
       {/* Grid con animaciones escalonadas */}
       <section className="grid grid-cols-1 md:grid-cols-2 gap-y-10">
         {airports.map((airport, index) => (
-          <AirportCard 
-            key={airport.id} 
-            airport={airport} 
-            index={index}
-          />
+          <AirportCard key={airport.id} airport={airport} index={index} />
         ))}
       </section>
 

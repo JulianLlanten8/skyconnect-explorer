@@ -1,5 +1,6 @@
 "use client";
 
+import { ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { Button } from "../../ui/Button";
 
@@ -24,20 +25,7 @@ export function BackButton({
 
   return (
     <Button variant="ghost" size="sm" onClick={handleBack}>
-      <svg
-        className="w-4 h-4 mr-2"
-        fill="none"
-        viewBox="0 0 24 24"
-        stroke="currentColor"
-      >
-        <title>Back</title>
-        <path
-          strokeLinecap="round"
-          strokeLinejoin="round"
-          strokeWidth={2}
-          d="M10 19l-7-7m0 0l7-7m-7 7h18"
-        />
-      </svg>
+      <ArrowLeft />
       {label}
     </Button>
   );

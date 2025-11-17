@@ -47,7 +47,6 @@ export async function getSearchHistoryAction(): Promise<
       data: history,
     };
   } catch (_error) {
-
     return {
       success: false,
       error: "Error al obtener el historial de búsqueda",
@@ -113,8 +112,7 @@ export async function saveSearchHistoryAction(
       success: true,
       data: newItem,
     };
-  } catch (error) {
-
+  } catch (_error) {
     return {
       success: false,
       error: "Error al guardar en el historial",
@@ -158,8 +156,7 @@ export async function deleteSearchHistoryItemAction(
       success: true,
       data: updatedHistory,
     };
-  } catch (error) {
-
+  } catch (_error) {
     return {
       success: false,
       error: "Error al eliminar del historial",
@@ -184,8 +181,7 @@ export async function clearSearchHistoryAction(): Promise<
       success: true,
       data: null,
     };
-  } catch (error) {
-
+  } catch (_error) {
     return {
       success: false,
       error: "Error al limpiar el historial",
@@ -232,8 +228,7 @@ export async function getMostFrequentSearchesAction(
       success: true,
       data: frequentSearches,
     };
-  } catch (error) {
-
+  } catch (_error) {
     return {
       success: false,
       error: "Error al obtener búsquedas frecuentes",
@@ -268,8 +263,7 @@ export async function getRecentSearchesAction(
       success: true,
       data: recentSearches,
     };
-  } catch (error) {
-
+  } catch (_error) {
     return {
       success: false,
       error: "Error al obtener búsquedas recientes",
@@ -306,8 +300,7 @@ export async function isInHistoryAction(
       success: true,
       data: exists,
     };
-  } catch (error) {
-
+  } catch (_error) {
     return {
       success: false,
       error: "Error al verificar el historial",

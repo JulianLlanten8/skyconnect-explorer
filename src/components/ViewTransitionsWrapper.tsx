@@ -5,7 +5,6 @@ import { useEffect } from "react";
 
 /**
  * View Transitions usando la API nativa del navegador
- * Compatible con Next.js 16 sin dependencias extra
  */
 export function ViewTransitionsWrapper({
   children,
