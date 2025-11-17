@@ -24,6 +24,7 @@ export default function HomePage() {
           <nav className="flex flex-col sm:flex-row gap-4 justify-center items-center">
             <Button
               type="submit"
+              form="airport-search"
               size="lg"
               className="w-full sm:w-auto min-w-[200px] bg-linear-to-r from-[#006AFF] to-[#00F9FF]"
             >

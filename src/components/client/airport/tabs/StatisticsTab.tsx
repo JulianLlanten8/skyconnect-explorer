@@ -18,7 +18,7 @@ export function StatisticsTab({ airport }: StatisticsTabProps) {
   const hasTimezone = !!airport.timezone;
 
   const completeness = [hasIATA, hasICAO, hasPhone, hasTimezone].filter(
-    Boolean
+    Boolean,
   ).length;
   const completenessPercentage = (completeness / 4) * 100;
 

@@ -40,7 +40,6 @@ export async function getAirportsAction(
 
     return { success: true, data: response };
   } catch (error) {
-
     if (error instanceof AviationstackError) {
       return { success: false, error: error.message };
     }
@@ -88,7 +87,6 @@ export async function getAirportDetailsAction(
 
     return { success: true, data: airport };
   } catch (error) {
-
     if (error instanceof AviationstackError) {
       return { success: false, error: error.message };
     }
@@ -147,7 +145,6 @@ export async function searchAirportsAction(
       },
     };
   } catch (error) {
-
     if (error instanceof AviationstackError) {
       return { success: false, error: error.message };
     }
@@ -190,7 +187,6 @@ export async function getAirportsByCountryAction(
 
     return { success: true, data: response };
   } catch (error) {
-
     if (error instanceof AviationstackError) {
       return { success: false, error: error.message };
     }
@@ -230,7 +226,7 @@ export async function revalidateAirportDetailsAction(
 ): Promise<ActionResponse<null>> {
   try {
     const upperCode = code.toUpperCase();
-    revalidateTag(`airport-${upperCode}`,  "page");
+    revalidateTag(`airport-${upperCode}`, "page");
     revalidatePath(`/airport/${code.toLowerCase()}`);
 
     return { success: true, data: null };

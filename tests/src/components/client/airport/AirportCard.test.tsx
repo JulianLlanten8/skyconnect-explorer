@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { AirportCard } from "@/components/client/airport/AirportCard";
 import type { Airport } from "@/types/airport";
 import "@testing-library/jest-dom";
@@ -29,7 +29,7 @@ describe("AirportCard Component", () => {
 
     // Check if airport name is rendered
     expect(
-      screen.getByText("El Nuevo Dorado International")
+      screen.getByText("El Nuevo Dorado International"),
     ).toBeInTheDocument();
 
     // Check if city and country are rendered
