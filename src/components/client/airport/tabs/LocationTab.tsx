@@ -39,7 +39,7 @@ export function LocationTab({ airport }: LocationTabProps) {
                     <p className="text-xl font-medium text-gray-500 dark:text-gray-400 mb-1">
                       Latitud:
                       <span className="text-md font-mono text-gray-900 dark:text-white ml-3">
-                        {airport.latitude.toFixed(6)} AAAAAA
+                        {airport.latitude.toFixed(6)}
                       </span>
                     </p>
                   </div>
@@ -89,7 +89,7 @@ export function LocationTab({ airport }: LocationTabProps) {
                 href={`https://www.google.com/maps/search/?api=1&query=${airport.latitude},${airport.longitude}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-lg transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 dark:bg-blue-700 dark:hover:bg-blue-800 text-white text-sm font-medium rounded-lg transition-colors"
               >
                 <Image
                   src="/icons/location.svg"
@@ -105,7 +105,7 @@ export function LocationTab({ airport }: LocationTabProps) {
                 href={`https://www.openstreetmap.org/?mlat=${airport.latitude}&mlon=${airport.longitude}&zoom=15`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 text-white text-sm font-medium rounded-lg transition-colors"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-gray-600 hover:bg-gray-700 dark:bg-gray-700 dark:hover:bg-gray-800 text-white text-sm font-medium rounded-lg transition-colors"
               >
                 <MapIcon size={20} />
                 Abrir en OpenStreetMap

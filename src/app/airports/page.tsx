@@ -37,25 +37,46 @@ export default async function AirportsPage({ searchParams }: PageProps) {
 
       <div className="relative z-10">
         {/* Header */}
-        <header className="sticky top-0 z-10 animate-slide-up">
+        <header className="sticky top-0 z-10 bg-white/80 dark:bg-gray-900/80 backdrop-blur-md shadow-sm animate-slide-up">
           <div className="container mx-auto px-4 py-4">
-            <div className="flex items-center justify-between">
-              <Link href="/" className="flex items-center gap-2">
-                <h1 className="text-4xl bg-linear-to-r from-[#006AFF] to-[#00F9FF] inline-block text-transparent bg-clip-text">
+            {/* Desktop Layout */}
+            <div className="hidden lg:flex items-center justify-between gap-6">
+              <Link href="/" className="flex items-center gap-2 shrink-0">
+                <h1 className="text-3xl xl:text-4xl bg-linear-to-r from-[#006AFF] to-[#00F9FF] inline-block text-transparent bg-clip-text whitespace-nowrap">
                   SkyConnect Explorer
                 </h1>
               </Link>
 
-              {/* Search Bar */}
-              <AirportsBar />
+              {/* Search Bar - Más espacio en desktop */}
+              <div className="flex-1 max-w-2xl">
+                <AirportsBar />
+              </div>
 
               <ThemeToggle />
+            </div>
+
+            {/* Mobile/Tablet Layout */}
+            <div className="lg:hidden space-y-4">
+              {/* Primera fila: Logo y Toggle */}
+              <div className="flex items-center justify-between">
+                <Link href="/" className="flex items-center gap-2">
+                  <h1 className="text-2xl sm:text-3xl bg-linear-to-r from-[#006AFF] to-[#00F9FF] inline-block text-transparent bg-clip-text">
+                    SkyConnect Explorer
+                  </h1>
+                </Link>
+                <ThemeToggle />
+              </div>
+
+              {/* Segunda fila: Search Bar completo */}
+              <div className="w-full">
+                <AirportsBar />
+              </div>
             </div>
           </div>
         </header>
 
         {/* Main Content */}
-        <section className="container mx-auto">
+        <section className="container mx-auto px-4 py-8">
           {/* Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
             {/* Results */}
@@ -98,7 +119,7 @@ async function AirportsResults({
     return (
       <div className="text-center py-12 animate-scale-in">
         <div className="inline-flex items-center justify-center w-16 h-16 bg-red-100 dark:bg-red-900/20 rounded-full mb-4">
-          <TriangleAlert />
+          <TriangleAlert className="w-8 h-8 text-red-600 dark:text-red-400" />
         </div>
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
           Error al cargar aeropuertos
@@ -114,7 +135,7 @@ async function AirportsResults({
     return (
       <div className="text-center py-12 animate-scale-in">
         <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 dark:bg-gray-800 rounded-full mb-4">
-          <SearchX />
+          <SearchX className="w-8 h-8 text-gray-600 dark:text-gray-400" />
         </div>
         <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2">
           No se encontraron aeropuertos

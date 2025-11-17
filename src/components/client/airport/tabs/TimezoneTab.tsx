@@ -39,7 +39,7 @@ export function TimezoneTab({ airport }: TimezoneTabProps) {
               <div className="flex items-center gap-3">
                 <Image
                   src="/icons/global.svg"
-                  alt="Ícono de ubicación"
+                  alt="Ícono de zona horaria"
                   width={10}
                   height={10}
                   className="w-8 h-8"
@@ -49,17 +49,19 @@ export function TimezoneTab({ airport }: TimezoneTabProps) {
 
               <div className="space-y-4">
                 {airport.timezone && (
-                  <p className="text-lg font-bold my-2">
+                  <p className="text-lg font-bold text-gray-900 dark:text-white my-2">
                     Zona Horaria:
-                    <span className="text-sm ml-3">{airport.timezone}</span>
+                    <span className="text-sm ml-3 font-normal text-gray-700 dark:text-gray-300">
+                      {airport.timezone}
+                    </span>
                   </p>
                 )}
 
                 {airport.gmt && (
                   <div>
-                    <p className="text-lg font-bold mb-1">
+                    <p className="text-lg font-bold text-gray-900 dark:text-white mb-1">
                       GMT:
-                      <span className="text-sm ml-3">
+                      <span className="text-sm ml-3 font-normal text-gray-700 dark:text-gray-300">
                         {formatGMT(airport.gmt)}
                       </span>
                     </p>
@@ -74,10 +76,12 @@ export function TimezoneTab({ airport }: TimezoneTabProps) {
           elements={
             <section>
               <div className="flex items-center gap-3">
-                <Clock height={80} />
+                <Clock className="w-8 h-8 text-blue-600 dark:text-blue-400" />
                 <Subtitle value="Hora Local:" className="text-2xl" />
               </div>
-              <p className="font-mono">{currentTime}</p>
+              <p className="font-mono text-2xl text-gray-900 dark:text-white mt-4">
+                {currentTime}
+              </p>
             </section>
           }
         />

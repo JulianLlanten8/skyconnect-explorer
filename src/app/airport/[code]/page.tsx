@@ -25,27 +25,41 @@ export default async function AirportDetailsPage({ params }: PageProps) {
   return (
     <main className="min-h-screen bg-gray-50 dark:bg-gray-900">
       {/* Header */}
-      <header className="sticky top-0 z-10 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 shadow-sm">
-        <nav className="container mx-auto px-4 py-4 flex items-center justify-between">
-          <section className="flex items-center gap-4">
-            <BackButton fallbackUrl="/airports" />
+      <header className="sticky top-0 z-10 bg-white/80 dark:bg-gray-800/80 backdrop-blur-md border-b border-gray-200 dark:border-gray-700 shadow-sm">
+        <nav className="container mx-auto px-4 py-4">
+          {/* Desktop Layout */}
+          <div className="hidden sm:flex items-center justify-between">
+            <section className="flex items-center gap-4">
+              <BackButton fallbackUrl="/airports" />
+              <Link href="/" className="flex items-center gap-2">
+                <span className="text-xl lg:text-2xl font-bold bg-linear-to-r from-[#006AFF] to-[#00F9FF] inline-block text-transparent bg-clip-text">
+                  SkyConnect Explorer
+                </span>
+              </Link>
+            </section>
+            <ThemeToggle />
+          </div>
 
-            <Link href="/" className="flex items-center gap-2">
-              <span className="text-xl font-bold text-gray-900 dark:text-white hidden sm:inline">
-                SkyConnect Explorer
-              </span>
-            </Link>
-          </section>
-
-          <ThemeToggle />
+          {/* Mobile Layout */}
+          <div className="flex sm:hidden items-center justify-between">
+            <section className="flex items-center gap-3">
+              <BackButton fallbackUrl="/airports" />
+              <Link href="/" className="flex items-center gap-2">
+                <span className="text-lg font-bold bg-linear-to-r from-[#006AFF] to-[#00F9FF] inline-block text-transparent bg-clip-text">
+                  SkyConnect
+                </span>
+              </Link>
+            </section>
+            <ThemeToggle />
+          </div>
         </nav>
       </header>
 
       {/* Main Content */}
-      <article className="container mx-auto py-8">
+      <article className="container mx-auto px-4 py-8">
         {/* Airport Header */}
-        <header className="mb-8">
-          <h1 className="text-8xl md:text-4xl font-extrabold  bg-linear-to-r from-[#006AFF] to-[#00F9FF] inline-block text-transparent bg-clip-text text-center mb-5">
+        <header className="mb-8 animate-slide-up">
+          <h1 className="text-3xl md:text-4xl lg:text-5xl font-extrabold bg-linear-to-r from-[#006AFF] to-[#00F9FF] inline-block text-transparent bg-clip-text text-center mb-6 w-full">
             {airport.airport_name}
           </h1>
 
@@ -54,7 +68,7 @@ export default async function AirportDetailsPage({ params }: PageProps) {
         </header>
 
         {/* Tab Content */}
-        <section className="max-w-8xl">
+        <section className="mx-auto">
           <AirportTabContent airport={airport} />
         </section>
       </article>

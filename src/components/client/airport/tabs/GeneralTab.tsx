@@ -21,7 +21,7 @@ export function GeneralTab({ airport }: GeneralTabProps) {
               <header className="flex items-center gap-3 my-3">
                 <Image
                   src="/icons/info-circle.svg"
-                  alt="Ícono de ubicación"
+                  alt="Ícono de información"
                   width={20}
                   height={20}
                   className="w-8 h-8"
@@ -29,35 +29,37 @@ export function GeneralTab({ airport }: GeneralTabProps) {
                 <Subtitle value="Información General" className="text-4xl" />
               </header>
 
-              <p className="text-xl font-bold">
+              <p className="text-xl font-bold text-gray-900 dark:text-white">
                 Código IATA:
-                <span className="text-lg ml-3 font-normal">
+                <span className="text-lg ml-3 font-normal text-gray-700 dark:text-gray-300">
                   {airport.iata_code || "N/A"}
                 </span>
               </p>
 
-              <p className="text-xl font-bold">
+              <p className="text-xl font-bold text-gray-900 dark:text-white">
                 Código ICAO:
-                <span className="text-lg ml-3 font-normal">
+                <span className="text-lg ml-3 font-normal text-gray-700 dark:text-gray-300">
                   {airport.icao_code || "N/A"}
                 </span>
               </p>
 
-              <p className="text-xl font-bold">
+              <p className="text-xl font-bold text-gray-900 dark:text-white">
                 País:
-                <span className="text-lg ml-3 font-normal">
+                <span className="text-lg ml-3 font-normal text-gray-700 dark:text-gray-300">
                   {airport.country_name || "N/A"}
                 </span>
               </p>
-              <p className="text-xl font-bold">
+              
+              <p className="text-xl font-bold text-gray-900 dark:text-white">
                 Ciudad IATA:
-                <span className="text-lg ml-3 font-normal">
+                <span className="text-lg ml-3 font-normal text-gray-700 dark:text-gray-300">
                   {airport.city_iata_code || "N/A"}
                 </span>
               </p>
-              <p className="text-xl font-bold">
+              
+              <p className="text-xl font-bold text-gray-900 dark:text-white">
                 Teléfono:
-                <span className="text-lg ml-3 font-normal">
+                <span className="text-lg ml-3 font-normal text-gray-700 dark:text-gray-300">
                   {airport.phone_number || "N/A"}
                 </span>
               </p>

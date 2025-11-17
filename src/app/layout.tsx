@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { ViewTransitionsWrapper } from "@/components/ViewTransitionsWrapper";
+import { ThemeProvider } from "@/components/providers/ThemeProvider";
 import { StoreProvider } from "@/store/StoreProvider";
 
 const geistSans = Geist({
@@ -34,7 +35,9 @@ export default function RootLayout({
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
         <StoreProvider>
-          <ViewTransitionsWrapper>{children}</ViewTransitionsWrapper>
+          <ThemeProvider>
+            <ViewTransitionsWrapper>{children}</ViewTransitionsWrapper>
+          </ThemeProvider>
         </StoreProvider>
       </body>
     </html>

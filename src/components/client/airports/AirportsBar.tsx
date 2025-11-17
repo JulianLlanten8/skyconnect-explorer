@@ -49,27 +49,28 @@ export function AirportsBar({ needSearchButton = true }: Props) {
   return (
     <section className="w-full">
       <form onSubmit={handleSearch} id="airport-search">
-        <div className="flex gap-2">
+        <div className="flex gap-2 w-full">
           <Input
             id="airport-search-input"
             type="search"
             placeholder="Buscar aeropuertos..."
             value={query}
             onChange={handlechange}
-            className="w-full rounded-full bg-white"
+            className="flex-1 rounded-full bg-white dark:bg-gray-800"
             aria-label="Buscar aeropuertos por nombre o código"
           />
 
           {needSearchButton && (
             <Button
-              className="w-full sm:w-auto min-w-[200px] bg-linear-to-r from-[#006AFF] to-[#00F9FF]"
+              className="shrink-0 bg-linear-to-r from-[#006AFF] to-[#00F9FF] hover:opacity-90 transition-opacity"
               type="submit"
               variant="primary"
               isLoading={isPending}
               disabled={isPending}
+              size="md"
             >
-              <Search />
-              Buscar
+              <Search className="w-4 h-4 sm:mr-2" />
+              <span className="hidden sm:inline">Buscar</span>
             </Button>
           )}
         </div>
