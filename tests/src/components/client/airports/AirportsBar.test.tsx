@@ -12,6 +12,7 @@ jest.mock("next/navigation", () => ({
   useSearchParams: () => ({
     get: jest.fn().mockReturnValue(""),
   }),
+   usePathname: () => "/airports",
 }));
 
 describe("AirportsBar Component", () => {
