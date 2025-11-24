@@ -49,14 +49,14 @@ export function GeneralTab({ airport }: GeneralTabProps) {
                   {airport.country_name || "N/A"}
                 </span>
               </p>
-              
+
               <p className="text-xl font-bold text-gray-900 dark:text-white">
                 Ciudad IATA:
                 <span className="text-lg ml-3 font-normal text-gray-700 dark:text-gray-300">
                   {airport.city_iata_code || "N/A"}
                 </span>
               </p>
-              
+
               <p className="text-xl font-bold text-gray-900 dark:text-white">
                 Teléfono:
                 <span className="text-lg ml-3 font-normal text-gray-700 dark:text-gray-300">

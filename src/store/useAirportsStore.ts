@@ -4,6 +4,20 @@ import type { Airport } from "@/types/airport";
 import type { Pagination } from "@/types/api";
 
 /**
+ * Cache TTL - 5 minutos
+ */
+const CACHE_TTL = 5 * 60 * 1000;
+
+/**
+ * Estructura de cache por clave
+ */
+interface CacheEntry {
+  airports: Airport[];
+  pagination: Pagination;
+  timestamp: number;
+}
+
+/**
  * Estado del store de aeropuertos
  */
 interface AirportsState {
@@ -11,6 +25,11 @@ interface AirportsState {
   airports: Airport[];
   pagination: Pagination | null;
   selectedAirport: Airport | null;
+
+  // Cache - Convertido a objeto para poder persistir
+  cache: Record<string, CacheEntry>;
+  cacheKey: string | null;
+  lastFetchTime: number | null;
 
   // Estado de carga
   isLoading: boolean;
@@ -37,7 +56,14 @@ interface AirportsState {
   setLimit: (limit: number) => void;
   setCountryFilter: (country: string | null) => void;
 
-  // Helpers
+  // Helpers de Cache
+  getCacheKey: () => string;
+  isCacheValid: (key: string) => boolean;
+  getFromCache: (key: string) => CacheEntry | null;
+  needsRefetch: () => boolean;
+  clearCache: () => void;
+
+  // Helpers de Paginación
   getTotalPages: () => number;
   hasNextPage: () => boolean;
   hasPreviousPage: () => boolean;
@@ -56,6 +82,9 @@ const initialState = {
   airports: [],
   pagination: null,
   selectedAirport: null,
+  cache: {},
+  cacheKey: null,
+  lastFetchTime: null,
   isLoading: false,
   error: null,
   searchQuery: "",
@@ -65,7 +94,7 @@ const initialState = {
 };
 
 /**
- * Store de aeropuertos
+ * Store de aeropuertos con cache inteligente
  */
 export const useAirportsStore = create<AirportsState>()(
   devtools(
@@ -73,14 +102,76 @@ export const useAirportsStore = create<AirportsState>()(
       (set, get) => ({
         ...initialState,
 
-        // Establecer aeropuertos con paginación
-        setAirports: (airports, pagination) =>
+        // Obtener clave de cache actual
+        getCacheKey: () => {
+          const { searchQuery, currentPage, limit, countryFilter } = get();
+          return `${searchQuery || "all"}-${currentPage}-${limit}-${countryFilter || "all"}`;
+        },
+
+        // Verificar si el cache es válido
+        isCacheValid: (key: string) => {
+          const { cache } = get();
+          const entry = cache[key];
+
+          if (!entry) return false;
+
+          const now = Date.now();
+          return now - entry.timestamp < CACHE_TTL;
+        },
+
+        // Obtener datos del cache
+        getFromCache: (key: string) => {
+          const { cache, isCacheValid } = get();
+
+          if (!isCacheValid(key)) return null;
+
+          return cache[key] || null;
+        },
+
+        // Verificar si necesita refetch
+        needsRefetch: () => {
+          const { getCacheKey, getFromCache } = get();
+          const currentKey = getCacheKey();
+          const cachedData = getFromCache(currentKey);
+
+          return cachedData === null;
+        },
+
+        // Limpiar cache
+        clearCache: () =>
           set(
             {
-              airports,
-              pagination,
-              isLoading: false,
-              error: null,
+              cache: {},
+              cacheKey: null,
+              lastFetchTime: null,
+            },
+            false,
+            "clearCache",
+          ),
+
+        // Establecer aeropuertos con paginación y actualizar cache
+        setAirports: (airports, pagination) =>
+          set(
+            (state) => {
+              const cacheKey = state.getCacheKey();
+              const timestamp = Date.now();
+
+              return {
+                airports,
+                pagination,
+                isLoading: false,
+                error: null,
+                cacheKey,
+                lastFetchTime: timestamp,
+                cache: {
+                  ...state.cache,
+                  [cacheKey]: {
+                    airports,
+                    pagination,
+                    timestamp,
+                  },
+                },
+              };
             },
             false,
             "setAirports",
@@ -246,11 +337,16 @@ export const useAirportsStore = create<AirportsState>()(
       {
         name: "airports-storage",
         partialize: (state) => ({
-          // Solo persistir estos campos
+          // Persistir datos importantes incluyendo cache
+          cache: state.cache,
+          airports: state.airports,
+          pagination: state.pagination,
           searchQuery: state.searchQuery,
           currentPage: state.currentPage,
           limit: state.limit,
           countryFilter: state.countryFilter,
+          cacheKey: state.cacheKey,
+          lastFetchTime: state.lastFetchTime,
         }),
       },
     ),
@@ -274,3 +370,5 @@ export const selectCurrentPage = (state: AirportsState) => state.currentPage;
 export const selectLimit = (state: AirportsState) => state.limit;
 export const selectCountryFilter = (state: AirportsState) =>
   state.countryFilter;
+export const selectNeedsRefetch = (state: AirportsState) =>
+  state.needsRefetch();

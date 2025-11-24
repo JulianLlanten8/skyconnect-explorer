@@ -79,10 +79,10 @@ export default async function AirportsPage({ searchParams }: PageProps) {
         <section className="container mx-auto px-4 py-8">
           {/* Content Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
-            {/* Results */}
+            {/* Results - Suspense con key único para evitar renders duplicados */}
             <section className="lg:col-span-4">
               <Suspense
-                key={`${search}-${page}-${country}`}
+                key={`airports-${search || "all"}-${page}-${country || "all"}`}
                 fallback={<AirportsLoading />}
               >
                 <AirportsResults
@@ -99,6 +99,10 @@ export default async function AirportsPage({ searchParams }: PageProps) {
   );
 }
 
+/**
+ * Server Component que fetch los datos
+ * Se renderiza UNA SOLA VEZ en el servidor
+ */
 async function AirportsResults({
   search,
   page,
@@ -108,6 +112,7 @@ async function AirportsResults({
   page: number;
   country?: string;
 }) {
+  // Fetch directo en Server Component
   const result = await getAirportsByPageAction({
     page,
     limit: 6,
